@@ -1,0 +1,67 @@
+----------Erlang--------------
+Add Erlang Solutions repository: 
+wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
+sudo apt-get update
+Install the Erlang/OTP platform and all of its applications
+sudo apt-get install esl-erlang
+sudo apt-get install elixir
+
+-----nodejs&npm-----
+sudo apt install nodejs
+sudo apt install npm
+
+--------inotify-tools -----
+apt-get install inotify-tools
+
+-----------------------phoenix------
+https://medium.com/@j.schlacher_32979/release-a-phoenix-application-with-docker-and-postgres-28c6ae8c7184
+
+
+mix phx.new my_app
+
+docker run --name postgres \
+    -e POSTGRES_PASSWORD=postgres \
+    -p 5432:5432 -d --rm postgres
+	
+----important---
+cd my_app
+vi /config/dev.exs
+
+config :my_app, MyAppWeb.Endpoint,
+  # Binding to loopback ipv4 address prevents access from other machines.
+  # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
+  http: [ip: {0, 0, 0, 0}, port: 4000],
+
+mix ecto.create
+mix phx.server
+
+
+
+
+
+------------------------------------updated--------------------------------------------
+
+
+
+
+https://medium.com/swlh/use-docker-to-create-an-elixir-phoenix-development-environment-e1a81def1d2e
+
+
+RUN apt-get update && \
+    apt-get install -y postgresql-client && \
+    apt install curl -y && \
+    apt install nodejs -y && \
+    apt install npm -y && \
+    mix local.hex -y && \
+    apt-get update && \
+    mix local.hex --force && \
+    mix archive.install hex phx_new 1.5.3 --force && \
+    mix local.rebar --force
+
+
+
+
+
+
+
+
