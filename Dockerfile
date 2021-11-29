@@ -1,13 +1,19 @@
-FROM bitwalker/alpine-elixir-phoenix:latest
+FROM elixir:latest
 
-WORKDIR /app
+RUN apt-get update && \
+    apt-get install -y postgresql-client && \
+    apt install curl -y && \
+    apt install nodejs -y && \
+    apt install npm -y && \
+    mix local.hex -y && \
+    apt-get update && \
+    mix local.hex --force && \
+    mix archive.install hex phx_new 1.5.3 --force && \
+    mix local.rebar --force
 
-COPY mix.exs .
-COPY mix.lock .
 
-RUN mkdir assets
+ENV APP_HOME /app
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
 
-COPY assets/package.json  assets
-COPY assets/package-lock.json  assets
-
-CMD mix deps.get && cd assets && npm install -g npm@8.1.4 && cd .. && mix phx.server
+CMD ["mix", "phx.server"]
