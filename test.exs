@@ -1,31 +1,47 @@
-import Config
+    import psycopg
 
-# Configure your database
-#
-# The MIX_TEST_PARTITION environment variable can be used
-# to provide built-in test partitioning in CI environment.
-# Run `mix help test` for more information.
-config :my_app, MyApp.Repo,
-  username: "postgres",
-  password: "2532",
-  database: "my_app_test#{System.get_env("MIX_TEST_PARTITION")}",
-  hostname: "localhost",
-  #url: System.get_env("DATABASE_URL") |> String.replace("?","test"),
-  pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: 10
+    CONNECT_ARGS = 'host=localhost user=postgres1 password=mypassword dbname=test'
 
-# We don't run a server during test. If one is required,
-# you can enable the server option below.
-config :my_app, MyAppWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "G0Y/lLhwGHroKJd6U1Qqp+8FD1JdJGA9wD3orikHPMLJGAOMu3ZiSkXFg6YcybAH",
-  server: false
+    def exportPlants(outfileName):
+        outfile = file(outfileName, 'w')
+        connection = psycopg.connect(CONNECT_ARGS)
+        cursor = connection.cursor()
+        cursor.execute("select * from Plant_DB order by p_name")
+        rows = cursor.fetchall()
+        outfile.write('<?xml version="1.0" ?>\n')
+        outfile.write('<mydata>\n')
+        for row in rows:
+            outfile.write('  <row>\n')
+            outfile.write('    <name>%s</name>\n' % row[0])
+            outfile.write('    <desc>%s</desc>\n' % row[1])
+            outfile.write('    <rating>%s</rating>\n' % row[2])
+            outfile.write('  </row>\n')
+        outfile.write('</mydata>\n')
+        outfile.close()
 
-# In test we don't send emails.
-config :my_app, MyApp.Mailer, adapter: Swoosh.Adapters.Test
+And, here is sample output:
 
-# Print only warnings and errors during test
-config :logger, level: :warn
+    <?xml version="1.0" ?>
+    <mydata>
+      <row>
+        <name>almonds</name>
+        <desc>good nuts</desc>
+        <rating>4</rating>
+      </row>
+      <row>
+        <name>apricot</name>
+        <desc>sweet fruit</desc>
+        <rating>4</rating>
+      </row>
+      <row>
+        <name>arugula</name>
+        <desc>heavy taste</desc>
+        <rating>4</rating>
+      </row>
+      <row>
+        <name>chard</name>
+        <desc>leafy green</desc>
+        <rating>4</rating>
+      </row>
+    </mydata>
 
-# Initialize plugs at runtime for faster test compilation
-config :phoenix, :plug_init_mode, :runtime
