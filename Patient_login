@@ -9,6 +9,7 @@
    </head>
    <%# <iframe width="700" height="900"> %>
       <body>
+       <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
          <div class="wrapper">
             <div class="title-text">
                <div class="title login">
