@@ -59,6 +59,21 @@ html,body{
   z-index: 1;
   transition: all 0.6s ease;
 }
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 35px;
+    top: 15px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #f1f1f1;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #0069d9;
+    cursor: pointer;
+  }
 .slide-controls label.signup{
   color: #000;
 }
