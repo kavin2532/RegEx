@@ -47,6 +47,15 @@ mix phx.server
 https://medium.com/swlh/use-docker-to-create-an-elixir-phoenix-development-environment-e1a81def1d2e
 
 
+----------------------------------------------------\
+
+mkdir test
+cd test
+create a dockerfile
+vi Dockerfile
+--------------------------
+FROM elixir:latest
+
 RUN apt-get update && \
     apt-get install -y postgresql-client && \
     apt install curl -y && \
@@ -58,10 +67,56 @@ RUN apt-get update && \
     mix archive.install hex phx_new 1.5.3 --force && \
     mix local.rebar --force
 
+ENV APP_HOME /app
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
 
+CMD ["mix", "phx.server"]
 
+----------------------------
+craete a docker compose file
+vi docker-compose.yml
 
+--------------------------------------
+version: "3"
 
+services:
+  phoenix:
+    build: .
+    volumes:
+      - ./src:/app
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+	  
+--------------------------------------
 
+docker-compose build
 
+mkdir src
 
+alias mix="docker-compose run --rm phoenix mix"
+cd src
+mix phx.new . --app hello
+vi config/dev.exs
+change the hostname db
+...
+# Configure your database
+...
+hostname: "db",
+...
+
+mix ecto.create
+mix ecto.migrate
+cd ..
+docker-compose up
